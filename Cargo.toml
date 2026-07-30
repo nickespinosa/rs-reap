@@ -1,0 +1,23 @@
+[package]
+name = "rs-reap"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A small, cross-platform child-process reaper for PID 1 applications"
+license = "MPL-2.0"
+readme = "README.md"
+keywords = ["process", "reaper", "pid1", "unix"]
+categories = ["os", "unix-apis"]
+
+[dependencies]
+libc = "0.2"
+
+[target.'cfg(all(unix, not(target_os = "solaris")))'.dependencies]
+signal-hook = "0.3"
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
