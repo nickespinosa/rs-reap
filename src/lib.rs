@@ -141,10 +141,7 @@ mod tests {
 
     #[test]
     fn support_matches_target() {
-        assert_eq!(
-            is_supported(),
-            cfg!(all(unix, not(target_os = "solaris")))
-        );
+        assert_eq!(is_supported(), cfg!(all(unix, not(target_os = "solaris"))));
     }
 
     #[test]
