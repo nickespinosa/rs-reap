@@ -1,3 +1,19 @@
 /target/
 Cargo.lock
+**/*.rs.bk
+.DS_Store
 
+# Local agent / editor overrides (never commit secrets)
+.claude/settings.local.json
+CLAUDE.local.md
+.opencode/node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Tool caches
+.codex-log/
+.grok/sessions/
+.pi/sessions/

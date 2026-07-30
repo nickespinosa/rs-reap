@@ -1,0 +1,17 @@
+# Project-scoped Grok Build config.
+# Instructions come from AGENTS.md; rules/skills are symlinked from .agents/.
+
+[permission]
+# Prefer explicit cargo/git allowlist style via runtime approvals.
+# Shared rules live in .agents/rules (via .grok/rules symlink).
+
+[compat.claude]
+skills = true
+rules = true
+agents = true
+hooks = true
+
+[compat.cursor]
+skills = false
+rules = false
+agents = false

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    ".agents/rules/*.md"
+  ],
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "*": "ask",
+      "cargo *": "allow",
+      "rustc *": "allow",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git branch*": "allow",
+      "git show*": "allow"
+    }
+  },
+  "lsp": true,
+  "formatter": {
+    "rustfmt": {
+      "command": ["rustfmt", "--edition", "2024"],
+      "extensions": [".rs"]
+    }
+  }
+}

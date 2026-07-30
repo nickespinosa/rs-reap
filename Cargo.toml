@@ -6,8 +6,12 @@ rust-version = "1.85"
 description = "A small, cross-platform child-process reaper for PID 1 applications"
 license = "MPL-2.0"
 readme = "README.md"
+repository = "https://github.com/nickespinosa/rs-reap"
+homepage = "https://github.com/nickespinosa/rs-reap"
+documentation = "https://docs.rs/rs-reap"
 keywords = ["process", "reaper", "pid1", "unix"]
 categories = ["os", "unix-apis"]
+include = ["src/**/*", "Cargo.toml", "LICENSE", "README.md", "rust-toolchain.toml"]
 
 [dependencies]
 libc = "0.2"

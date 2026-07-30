@@ -26,10 +26,31 @@ std::thread::spawn(move || {
 let _ = (pids_rx, errors_rx, stop_tx);
 ```
 
-## Compatibility
+## Develop
 
-The crate uses Rust 2024 edition and requires Rust 1.85 or newer. The project
-was developed against current stable Rust 1.97.1 (July 2026).
+```bash
+cargo fmt --check
+cargo clippy --all-targets -- -D warnings
+cargo test
+```
+
+Toolchain is pinned in `rust-toolchain.toml` (Rust 1.97.1). Edition 2024,
+MSRV 1.85.
+
+## Agent configuration
+
+Project instructions for coding agents live in [`AGENTS.md`](AGENTS.md).
+Tool adapters inherit from that file and shared content under [`.agents/`](.agents/):
+
+| Path | Role |
+|------|------|
+| `AGENTS.md` | Canonical instructions (Codex, OpenCode, Grok, Pi, …) |
+| `CLAUDE.md` | Claude Code import of `AGENTS.md` + thin notes |
+| `opencode.json` | OpenCode project config |
+| `.agents/` | Shared rules, skills, subagent prompts |
+| `.claude/` / `.opencode/` / `.grok/` / `.pi/` | Tool-specific adapters (symlinks + frontmatter) |
+
+See [`.agents/README.md`](.agents/README.md) for the inheritance map.
 
 ## License
 
