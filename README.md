@@ -49,11 +49,10 @@ Tool adapters inherit from that file and shared content under [`.agents/`](.agen
 | `CLAUDE.md` | `@AGENTS.md` + Claude-only notes |
 | `opencode.json` | OpenCode config; agents load prompts via `{file:}` |
 | `.agents/` | Shared rules, skills, subagent prompts (source of truth) |
-| `.claude/` / `.grok/` / `.opencode/` / `.pi/` | Thin adapters (symlinks, frontmatter, or config refs) |
+| `.claude/` / `.grok/` / `.pi/` | Thin adapters (settings, symlinks, or config refs) |
 
 See [`.agents/README.md`](.agents/README.md) for the inheritance map.
 
 ## License
 
 Mozilla Public License 2.0. See [LICENSE](LICENSE).
-

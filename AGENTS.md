@@ -35,7 +35,6 @@ rust-toolchain.toml     Pinned toolchain
 AGENTS.md               Canonical agent instructions (this file)
 .agents/                Shared rules, skills, agent prompts (source of truth)
 .claude/                Claude Code adapter (inherits .agents + AGENTS.md)
-.opencode/              OpenCode adapter
 .grok/                  Grok Build adapter
 .pi/                    Pi adapter
 .github/                CI, templates, Dependabot
@@ -96,7 +95,6 @@ AGENTS.md               Canonical agent instructions (this file)
 | `.claude/agents/*`                         | Tool frontmatter + `@.agents/prompts/*`                              |
 | `.grok/{rules,skills}`                     | Symlinks → `.agents/{rules,skills}`                                  |
 | `.grok/agents`                             | Symlink → `.claude/agents`                                           |
-| `.opencode/skills`                         | Symlink → `.agents/skills`                                           |
 | `.pi/`                                     | Settings only                                                        |
 
 Edit shared content under `.agents/` or `AGENTS.md` only. Adapters are symlinks, `@` imports, or `{file:}` refs — never duplicated bodies.
