@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Quality"
+  short_description: "Review and enforce project quality standards"
+  default_prompt: "Use $code-quality to review this repository against its documented quality standards."

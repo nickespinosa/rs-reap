@@ -1,7 +1,7 @@
 # Shared agent configuration
 
 Single source of truth for multi-tool agent setup. Tool directories
-(`.claude/`, `.opencode/`, `.grok/`, `.pi/`) are thin adapters that inherit
+(`.claude/`, `.grok/`, `.pi/`) are thin adapters that inherit
 from here plus root `AGENTS.md`.
 
 ```text
@@ -17,7 +17,7 @@ from here plus root `AGENTS.md`.
 | ----------- | -------------------------- | -------------------------- | ---------------------------- | ------------------------------------------- |
 | All         | `AGENTS.md`                | —                          | —                            | —                                           |
 | Claude Code | `CLAUDE.md` → `@AGENTS.md` | `.claude/rules` → `rules/` | `.claude/skills` → `skills/` | `.claude/agents/*` → `@prompts/*`           |
-| OpenCode    | `opencode.json`            | via `instructions` glob    | `.opencode/skills` → `skills/` | `opencode.json` `agent.*.prompt` `{file:}` |
+| OpenCode    | `opencode.json`            | via `instructions` glob    | `.agents/skills`              | `opencode.json` `agent.*.prompt` `{file:}` |
 | Grok Build  | discovers `AGENTS.md`      | `.grok/rules` → `rules/`   | `.grok/skills` → `skills/`   | `.grok/agents` → `.claude/agents`           |
 | Codex       | discovers `AGENTS.md`      | —                          | `.agents/skills`             | —                                           |
 | Pi          | discovers `AGENTS.md`      | —                          | —                            | `.pi/` settings only                        |
