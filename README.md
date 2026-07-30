@@ -38,6 +38,11 @@ Style: **100 columns**, airy/vertical rustfmt, EditorConfig, Clippy pedantic.
 Toolchain pinned in `rust-toolchain.toml` (Rust 1.97.1). Edition 2024, MSRV
 1.85.
 
+## Contributing
+
+Public read/fork only — external PRs and feature requests are not accepted
+(auto-closed). Bug reports welcome via issues. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Agent configuration
 
 Project instructions for coding agents live in [`AGENTS.md`](AGENTS.md).
@@ -47,12 +52,14 @@ Tool adapters inherit from that file and shared content under [`.agents/`](.agen
 |------|------|
 | `AGENTS.md` | Canonical instructions (all tools) |
 | `CLAUDE.md` | `@AGENTS.md` + Claude-only notes |
-| `opencode.json` | OpenCode config; agents load prompts via `{file:}` |
-| `.agents/` | Shared rules, skills, subagent prompts (source of truth) |
+| `.agents/opencode.json` | OpenCode config (source of truth) |
+| `opencode.json` | Symlink → `.agents/opencode.json` |
+| `.agents/` | Shared rules, skills, prompts, opencode config |
 | `.claude/` / `.grok/` / `.pi/` | Thin adapters (settings, symlinks, or config refs) |
 
 See [`.agents/README.md`](.agents/README.md) for the inheritance map.
 
 ## License
 
-Mozilla Public License 2.0. See [LICENSE](LICENSE).
+Copyright 2026 Nick Espinosa. Mozilla Public License 2.0.
+See [LICENSE](LICENSE).

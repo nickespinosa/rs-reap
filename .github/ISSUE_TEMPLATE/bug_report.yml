@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a reproducible bug in rs-reap.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve rs-reap.
+        Bug reports are welcome here, but feature requests are not accepted.
+        If you want a different API or behavior, please fork the repo and make it yours.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the behavior you saw.
+      placeholder: Tell me what broke or behaved unexpectedly.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What did you expect to happen?
+      description: Describe the behavior you expected.
+      placeholder: Tell me what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Reproduction steps
+      description: List the smallest set of steps that reproduces the bug.
+      placeholder: |
+        1. Spawn the reaper with ...
+        2. Start a child that ...
+        3. See ...
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Where did you see the bug?
+      multiple: true
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Solaris
+        - Other Unix
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: rust-version
+    attributes:
+      label: Rust version
+      description: If relevant, include the rustc version.
+      placeholder: "Example: rustc 1.97.1"
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or output
+      description: Paste any relevant error output.
+      render: shell
+    validations:
+      required: false
