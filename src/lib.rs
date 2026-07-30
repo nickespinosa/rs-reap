@@ -17,7 +17,11 @@ use std::sync::{Arc, RwLock};
 pub type Pid = libc::pid_t;
 
 /// Process id reported by the reaper.
-#[cfg(any(windows, target_os = "solaris", not(unix)))]
+#[cfg(any(
+    windows,
+    target_os = "solaris",
+    not(unix)
+))]
 pub type Pid = i32;
 
 /// Returns whether child-process reaping is supported on this platform.
@@ -51,7 +55,11 @@ pub fn reap_children(
         reap_lock.as_ref(),
     );
 
-    #[cfg(any(windows, target_os = "solaris", not(unix)))]
+    #[cfg(any(
+        windows,
+        target_os = "solaris",
+        not(unix)
+    ))]
     {
         let _ = (pids, errors, shutdown, reap_lock);
     }
@@ -78,20 +86,24 @@ mod platform {
         loop {
             match shutdown.try_recv() {
                 Ok(()) | Err(TryRecvError::Disconnected) => return,
-                Err(TryRecvError::Empty) => {}
+                Err(TryRecvError::Empty) => {},
             }
 
             if signals.pending().next().is_some() {
-                let _guard = reap_lock
-                    .as_ref()
-                    .map(|lock| lock.write().expect("reap lock poisoned"));
+                let _guard = reap_lock.as_ref().map(|lock| {
+                    lock.write()
+                        .expect("reap lock poisoned")
+                });
                 drain_children(pids, errors);
                 continue;
             }
 
             // Polling keeps shutdown responsive without another helper thread
             // or an async runtime.
-            if shutdown.recv_timeout(Duration::from_millis(50)).is_ok() {
+            if shutdown
+                .recv_timeout(Duration::from_millis(50))
+                .is_ok()
+            {
                 return;
             }
         }
@@ -103,7 +115,12 @@ mod platform {
             let pid = unsafe {
                 // SAFETY: `status` is a valid out-pointer and the remaining
                 // arguments are the documented wait4 values.
-                libc::wait4(-1, &raw mut status, libc::WNOHANG, std::ptr::null_mut())
+                libc::wait4(
+                    -1,
+                    &raw mut status,
+                    libc::WNOHANG,
+                    std::ptr::null_mut(),
+                )
             };
 
             if pid > 0 {
@@ -128,7 +145,7 @@ mod platform {
                         let _ = sender.send(error);
                     }
                     return;
-                }
+                },
             }
         }
     }
@@ -141,7 +158,10 @@ mod tests {
 
     #[test]
     fn support_matches_target() {
-        assert_eq!(is_supported(), cfg!(all(unix, not(target_os = "solaris"))));
+        assert_eq!(
+            is_supported(),
+            cfg!(all(unix, not(target_os = "solaris")))
+        );
     }
 
     #[test]
@@ -155,7 +175,12 @@ mod tests {
         let (error_tx, error_rx) = mpsc::channel();
         let (shutdown_tx, shutdown_rx) = mpsc::channel();
         let reaper = std::thread::spawn(move || {
-            reap_children(Some(pid_tx), Some(error_tx), shutdown_rx, None);
+            reap_children(
+                Some(pid_tx),
+                Some(error_tx),
+                shutdown_rx,
+                None,
+            );
         });
 
         let child = Command::new("sh")
@@ -165,7 +190,9 @@ mod tests {
         let expected_pid = child.id().cast_signed();
 
         assert_eq!(
-            pid_rx.recv_timeout(Duration::from_secs(2)).unwrap(),
+            pid_rx
+                .recv_timeout(Duration::from_secs(2))
+                .unwrap(),
             expected_pid
         );
         assert!(error_rx.try_recv().is_err());
@@ -174,12 +201,21 @@ mod tests {
     }
 
     #[test]
-    #[cfg(any(windows, target_os = "solaris", not(unix)))]
+    #[cfg(any(
+        windows,
+        target_os = "solaris",
+        not(unix)
+    ))]
     fn unsupported_platform_is_a_noop() {
         let (pid_tx, pid_rx) = mpsc::channel();
         let (error_tx, error_rx) = mpsc::channel();
         let (_, shutdown_rx) = mpsc::channel();
-        reap_children(Some(pid_tx), Some(error_tx), shutdown_rx, None);
+        reap_children(
+            Some(pid_tx),
+            Some(error_tx),
+            shutdown_rx,
+            None,
+        );
         assert!(pid_rx.try_recv().is_err());
         assert!(error_rx.try_recv().is_err());
     }

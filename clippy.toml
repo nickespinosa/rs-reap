@@ -1,0 +1,6 @@
+# Minimal clippy knobs. Severity lives in Cargo.toml [lints.clippy].
+
+cognitive-complexity-threshold = 15
+too-many-arguments-threshold = 5
+too-many-lines-threshold = 120
+type-complexity-threshold = 250

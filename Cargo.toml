@@ -21,7 +21,15 @@ signal-hook = "0.3"
 
 [lints.rust]
 unsafe_op_in_unsafe_fn = "deny"
+unused_must_use = "deny"
+unused_unsafe = "warn"
 
 [lints.clippy]
 all = "warn"
 pedantic = "warn"
+cargo = "warn"
+manual_let_else = "warn"
+redundant_clone = "warn"
+trivially_copy_pass_by_ref = "warn"
+uninlined_format_args = "warn"
+use_self = "warn"

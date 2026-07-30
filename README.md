@@ -29,13 +29,14 @@ let _ = (pids_rx, errors_rx, stop_tx);
 ## Develop
 
 ```bash
-cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo test
+make verify   # fmt-check + clippy + test
+make ci       # verify + docs (matches GitHub Actions)
+make fmt      # apply rustfmt
 ```
 
-Toolchain is pinned in `rust-toolchain.toml` (Rust 1.97.1). Edition 2024,
-MSRV 1.85.
+Style: **100 columns**, airy/vertical rustfmt, EditorConfig, Clippy pedantic.
+Toolchain pinned in `rust-toolchain.toml` (Rust 1.97.1). Edition 2024, MSRV
+1.85.
 
 ## Agent configuration
 
@@ -44,11 +45,11 @@ Tool adapters inherit from that file and shared content under [`.agents/`](.agen
 
 | Path | Role |
 |------|------|
-| `AGENTS.md` | Canonical instructions (Codex, OpenCode, Grok, Pi, …) |
-| `CLAUDE.md` | Claude Code import of `AGENTS.md` + thin notes |
-| `opencode.json` | OpenCode project config |
-| `.agents/` | Shared rules, skills, subagent prompts |
-| `.claude/` / `.opencode/` / `.grok/` / `.pi/` | Tool-specific adapters (symlinks + frontmatter) |
+| `AGENTS.md` | Canonical instructions (all tools) |
+| `CLAUDE.md` | `@AGENTS.md` + Claude-only notes |
+| `opencode.json` | OpenCode config; agents load prompts via `{file:}` |
+| `.agents/` | Shared rules, skills, subagent prompts (source of truth) |
+| `.claude/` / `.grok/` / `.opencode/` / `.pi/` | Thin adapters (symlinks, frontmatter, or config refs) |
 
 See [`.agents/README.md`](.agents/README.md) for the inheritance map.
 

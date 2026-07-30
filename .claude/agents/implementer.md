@@ -5,4 +5,4 @@ tools: Read, Edit, Write, Grep, Glob, Bash
 model: inherit
 ---
 
-Read and follow `.agents/prompts/implementer.md` as your full system instructions.
+@.agents/prompts/implementer.md

@@ -8,18 +8,26 @@ from here plus root `AGENTS.md`.
 .agents/
   rules/          Path-scoped markdown rules
   skills/         Agent Skills packages (SKILL.md)
-  prompts/        Shared subagent bodies (no tool frontmatter)
+  prompts/        Shared subagent bodies (+ name/description frontmatter)
 ```
 
 ## Inheritance
 
-| Tool        | Instructions                   | Rules                      | Skills                         | Agents                                |
-| ----------- | ------------------------------ | -------------------------- | ------------------------------ | ------------------------------------- |
-| All         | `AGENTS.md`                    | —                          | —                              | —                                     |
-| Claude Code | `CLAUDE.md` → `@AGENTS.md`     | `.claude/rules` → `rules/` | `.claude/skills` → `skills/`   | `.claude/agents/*` wraps `prompts/`   |
-| OpenCode    | `opencode.json` `instructions` | via glob                   | `.opencode/skills` → `skills/` | `.opencode/agents/*` wraps `prompts/` |
-| Grok Build  | discovers `AGENTS.md`          | `.grok/rules` → `rules/`   | `.grok/skills` → `skills/`     | `.grok/agents/*` wraps `prompts/`     |
-| Codex       | discovers `AGENTS.md`          | —                          | `.agents/skills`               | —                                     |
-| Pi          | discovers `AGENTS.md`          | —                          | —                              | `.pi/` settings only                  |
+| Tool        | Instructions               | Rules                      | Skills                       | Agents                                      |
+| ----------- | -------------------------- | -------------------------- | ---------------------------- | ------------------------------------------- |
+| All         | `AGENTS.md`                | —                          | —                            | —                                           |
+| Claude Code | `CLAUDE.md` → `@AGENTS.md` | `.claude/rules` → `rules/` | `.claude/skills` → `skills/` | `.claude/agents/*` → `@prompts/*`           |
+| OpenCode    | `opencode.json`            | via `instructions` glob    | `.opencode/skills` → `skills/` | `opencode.json` `agent.*.prompt` `{file:}` |
+| Grok Build  | discovers `AGENTS.md`      | `.grok/rules` → `rules/`   | `.grok/skills` → `skills/`   | `.grok/agents` → `.claude/agents`           |
+| Codex       | discovers `AGENTS.md`      | —                          | `.agents/skills`             | —                                           |
+| Pi          | discovers `AGENTS.md`      | —                          | —                            | `.pi/` settings only                        |
 
-When adding a rule or skill, put it under `.agents/` only. Adapters pick it up via symlink.
+### Edit rules
+
+1. **Project facts / commands / architecture** → `AGENTS.md` only.
+2. **Path-scoped rules or skills** → `.agents/rules/` or `.agents/skills/` only.
+3. **Subagent behavior** → `.agents/prompts/*.md` only.
+4. **Tool wiring** (permissions, colors, tool allowlists) → that tool’s adapter
+   (`opencode.json`, `.claude/agents/*` frontmatter, `.claude/settings.json`, …).
+
+Never copy prompt bodies or project facts into tool trees.

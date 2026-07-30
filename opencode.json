@@ -4,6 +4,56 @@
     "AGENTS.md",
     ".agents/rules/*.md"
   ],
+  "agent": {
+    "implementer": {
+      "description": "Implements planned changes. Use after a plan exists or for straightforward edits.",
+      "mode": "subagent",
+      "prompt": "{file:./.agents/prompts/implementer.md}",
+      "color": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "cargo *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow"
+        }
+      }
+    },
+    "planner": {
+      "description": "Plans implementation without editing. Use before non-trivial changes.",
+      "mode": "subagent",
+      "prompt": "{file:./.agents/prompts/planner.md}",
+      "color": "accent",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "cargo *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow"
+        }
+      }
+    },
+    "reviewer": {
+      "description": "Reviews diffs for correctness, safety, and AGENTS.md compliance.",
+      "mode": "subagent",
+      "prompt": "{file:./.agents/prompts/reviewer.md}",
+      "color": "warning",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "cargo *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow"
+        }
+      }
+    }
+  },
   "permission": {
     "edit": "allow",
     "bash": {

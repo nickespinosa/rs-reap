@@ -39,17 +39,8 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
 
-      - name: Format
-        run: cargo fmt --check
-
-      - name: Clippy
-        run: cargo clippy --all-targets -- -D warnings
-
-      - name: Test
-        run: cargo test
-
-      - name: Docs
-        run: cargo doc --no-deps
+      - name: Verify (fmt, clippy, test, doc)
+        run: make ci
 
   windows:
     name: check (windows-latest)

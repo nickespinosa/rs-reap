@@ -6,23 +6,31 @@ Canonical instructions for coding agents. Tool-specific adapters inherit this fi
 
 ## Commands
 
-| Command                                     | Purpose                               |
-| ------------------------------------------- | ------------------------------------- |
-| `cargo test`                                | Run unit tests                        |
-| `cargo clippy --all-targets -- -D warnings` | Lint (pedantic enabled in Cargo.toml) |
-| `cargo fmt --check`                         | Format check                          |
-| `cargo doc --no-deps`                       | Build API docs                        |
-| `cargo build`                               | Debug build                           |
+| Command        | Purpose                                      |
+| -------------- | -------------------------------------------- |
+| `make verify`  | fmt-check → clippy → test (default gate)     |
+| `make ci`      | verify + docs (matches GitHub Actions)       |
+| `make fmt`     | Apply rustfmt                                |
+| `make lint`    | Clippy with `-D warnings`                    |
+| `make test`    | Unit tests                                   |
+| `cargo fmt-check` / `cargo lint` / `cargo docs` | Cargo aliases (see `.cargo/config.toml`) |
 
-Verify order after code changes: `cargo fmt --check` → `cargo clippy --all-targets -- -D warnings` → `cargo test`.
+Style: `rustfmt.toml` (**max_width 100**, low width thresholds for airy breaks),
+`.editorconfig` (100-col soft wrap), `clippy.toml` + `[lints]` in `Cargo.toml`.
 
-Toolchain: `rust-toolchain.toml` pins Rust **1.97.1** with `rustfmt` + `clippy`. Edition **2024**, MSRV **1.85**.
+Toolchain: `rust-toolchain.toml` pins Rust **1.97.1** with `rustfmt` + `clippy`.
+Edition **2024**, MSRV **1.85**.
 
 ## Layout
 
 ```text
 src/lib.rs              Public API + Unix reaper + platform stubs
 Cargo.toml              Crate metadata, deps, lints
+rustfmt.toml            Opinionated format (100 cols, vertical/airy)
+clippy.toml             Complexity thresholds
+.editorconfig           Cross-editor indent + max_line_length 100
+Makefile                fmt / lint / test / verify / ci
+.cargo/config.toml      cargo aliases (fmt-check, lint, docs)
 rust-toolchain.toml     Pinned toolchain
 AGENTS.md               Canonical agent instructions (this file)
 .agents/                Shared rules, skills, agent prompts (source of truth)
@@ -45,7 +53,9 @@ AGENTS.md               Canonical agent instructions (this file)
 
 - Prefer safe Rust; any `unsafe` needs a `// SAFETY:` justification on the block.
 - `unsafe_op_in_unsafe_fn` is denied.
-- Clippy `all` + `pedantic` are warnings in `Cargo.toml`; treat new pedantic hits as fix-or-justify.
+- Format with `rustfmt.toml` only — do not hand-wrap against it. **100 columns**.
+- Prefer vertical, airy layouts (rustfmt width thresholds ≈ 40) over dense one-liners.
+- Clippy `all` + `pedantic` (+ a few explicit lints) warn in `Cargo.toml`; fix or justify.
 - No drive-by refactors; no comments unless asked.
 - Match existing naming and module structure in `src/lib.rs`.
 - Do not expand the public API without an explicit request.
@@ -68,20 +78,25 @@ AGENTS.md               Canonical agent instructions (this file)
 ## Git / PR
 
 - Conventional, concise commits focused on one change.
-- Before finishing: run the verify order above and fix failures.
+- Before finishing: `make verify` (or `make ci`) and fix failures.
 - Prefer feature branches; do not force-push shared default branch.
 - PR description: what changed, why, how verified.
 
 ## Agent config inheritance
 
-| Layer                                      | Role                                              |
-| ------------------------------------------ | ------------------------------------------------- |
-| `AGENTS.md`                                | Canonical project facts (all tools)               |
-| `.agents/rules/`                           | Path-scoped rules (shared)                        |
-| `.agents/skills/`                          | Agent Skills standard packages (shared)           |
-| `.agents/prompts/`                         | Shared subagent bodies                            |
-| `CLAUDE.md`                                | Imports `AGENTS.md`; Claude-only notes            |
-| `opencode.json`                            | Points `instructions` at `AGENTS.md`              |
-| `.claude/`, `.opencode/`, `.grok/`, `.pi/` | Thin tool adapters (symlinks or frontmatter only) |
+| Layer                                      | Role                                                                 |
+| ------------------------------------------ | -------------------------------------------------------------------- |
+| `AGENTS.md`                                | Canonical project facts (all tools)                                  |
+| `.agents/rules/`                           | Path-scoped rules (shared)                                           |
+| `.agents/skills/`                          | Agent Skills packages (shared)                                       |
+| `.agents/prompts/`                         | Shared subagent bodies (+ name/description)                          |
+| `CLAUDE.md`                                | `@AGENTS.md` + Claude-only notes                                     |
+| `opencode.json`                            | `instructions` + `agent.*.prompt` `{file:./.agents/prompts/*}`       |
+| `.claude/rules`, `skills`                  | Symlinks → `.agents/{rules,skills}`                                  |
+| `.claude/agents/*`                         | Tool frontmatter + `@.agents/prompts/*`                              |
+| `.grok/{rules,skills}`                     | Symlinks → `.agents/{rules,skills}`                                  |
+| `.grok/agents`                             | Symlink → `.claude/agents`                                           |
+| `.opencode/skills`                         | Symlink → `.agents/skills`                                           |
+| `.pi/`                                     | Settings only                                                        |
 
-Edit shared content under `.agents/` or `AGENTS.md`. Do not copy-paste the same rule into multiple tool trees.
+Edit shared content under `.agents/` or `AGENTS.md` only. Adapters are symlinks, `@` imports, or `{file:}` refs — never duplicated bodies.

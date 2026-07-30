@@ -9,16 +9,24 @@ disable-model-invocation: false
 Run from the repository root:
 
 ```bash
-cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo test
+make verify
 ```
 
-Optional:
+Full CI parity (adds docs):
 
 ```bash
-cargo doc --no-deps
-cargo build
+make ci
 ```
 
-Report pass/fail per command. Fix failures before finishing the task.
+Equivalents without Make:
+
+```bash
+cargo fmt-check
+cargo lint
+cargo test
+cargo docs   # optional
+```
+
+Style knobs: `rustfmt.toml` (100 cols), `clippy.toml`, `.editorconfig`.
+
+Report pass/fail per step. Fix failures before finishing.

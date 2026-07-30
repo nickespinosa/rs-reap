@@ -1,0 +1,31 @@
+# Opinionated, minimal, well-spaced Rust style.
+# Stable rustfmt only (matches rust-toolchain.toml).
+
+edition = "2024"
+style_edition = "2024"
+
+max_width = 100
+tab_spaces = 4
+hard_tabs = false
+newline_style = "Unix"
+
+# Airy / vertical: low thresholds force breaks well before max_width.
+use_small_heuristics = "Default"
+fn_call_width = 40
+attr_fn_like_width = 40
+struct_lit_width = 24
+struct_variant_width = 24
+array_width = 40
+chain_width = 40
+single_line_if_else_max_width = 40
+single_line_let_else_max_width = 40
+
+reorder_imports = true
+reorder_modules = true
+remove_nested_parens = true
+
+match_block_trailing_comma = true
+merge_derives = true
+use_field_init_shorthand = true
+use_try_shorthand = true
+force_explicit_abi = true
