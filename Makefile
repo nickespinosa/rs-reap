@@ -1,6 +1,6 @@
 # Local automation for fmt / lint / test. CI runs the same verify path.
 
-.PHONY: help fmt fmt-check lint test docs build verify ci
+.PHONY: help clean fmt fmt-check lint test docs build verify ci
 
 # rustup installs here; non-interactive make often lacks it on PATH.
 export PATH := $(HOME)/.cargo/bin:$(PATH)
@@ -17,6 +17,7 @@ FLAGS ?=
 
 help:
 	@echo "targets:"
+	@echo "  clean       cargo clean"
 	@echo "  fmt         cargo fmt --all   (do not pass --all to make)"
 	@echo "  fmt-check   cargo fmt-check"
 	@echo "  lint        cargo lint"
@@ -28,6 +29,9 @@ help:
 	@echo ""
 	@echo "note: Make parses flags before targets, so \`make fmt --all\` fails."
 	@echo "      Use \`make fmt\` — it already runs cargo fmt --all."
+
+clean:
+	$(CARGO) clean $(FLAGS)
 
 fmt:
 	$(CARGO) fmt --all $(FLAGS)
