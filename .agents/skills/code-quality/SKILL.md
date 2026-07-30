@@ -19,6 +19,9 @@ references only when the project explicitly points to them.
    layout, naming patterns, documentation expectations, and canonical commands.
    Prefer existing Make targets, scripts, cargo aliases, or CI commands over
    inventing new checks.
+   Run `scripts/check-dependencies.sh` from this skill when dependency or
+   toolchain readiness is part of the review; it is read-only and reports
+   missing local prerequisites.
 3. Review implementation and tests for correctness, portability, error
    handling, security, resource cleanup, and consistency with established
    patterns. Check that public API, filenames, modules, and symbols follow the
@@ -57,6 +60,19 @@ references only when the project explicitly points to them.
   metadata are accurate and internally consistent.
 - Generated artifacts, local caches, secrets, and editor/tool state are not
   committed.
+
+## Dependency readiness
+
+Run the bundled checker from the repository root:
+
+```bash
+.agents/skills/code-quality/scripts/check-dependencies.sh
+```
+
+It discovers common manifests (`Cargo.toml`, `go.mod`, `package.json`, and
+`pyproject.toml`), verifies the corresponding package-manager commands, and
+for this Rust project checks `cargo`, `rustc`, `rustfmt`, `clippy`, and `make`.
+It never edits manifests or lockfiles and does not download dependencies.
 
 ## Report
 
