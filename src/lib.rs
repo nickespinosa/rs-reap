@@ -9,6 +9,17 @@ use std::io;
 use std::sync::mpsc::{Receiver, Sender};
 use std::sync::{Arc, RwLock};
 
+/// Process id reported by the reaper.
+///
+/// On Unix this matches `libc::pid_t`. On other platforms it is `i32` so the
+/// public API stays portable even though reaping is a no-op there.
+#[cfg(all(unix, not(target_os = "solaris")))]
+pub type Pid = libc::pid_t;
+
+/// Process id reported by the reaper.
+#[cfg(any(windows, target_os = "solaris", not(unix)))]
+pub type Pid = i32;
+
 /// Returns whether child-process reaping is supported on this platform.
 #[must_use]
 pub const fn is_supported() -> bool {
@@ -27,7 +38,7 @@ pub const fn is_supported() -> bool {
 /// that wait to prevent the reaper from claiming the exit status first.
 #[allow(clippy::needless_pass_by_value)]
 pub fn reap_children(
-    pids: Option<Sender<libc::pid_t>>,
+    pids: Option<Sender<Pid>>,
     errors: Option<Sender<io::Error>>,
     shutdown: Receiver<()>,
     reap_lock: Option<Arc<RwLock<()>>>,
@@ -48,14 +59,14 @@ pub fn reap_children(
 
 #[cfg(all(unix, not(target_os = "solaris")))]
 mod platform {
-    use super::{Arc, Receiver, RwLock, Sender, io};
+    use super::{Arc, Pid, Receiver, RwLock, Sender, io};
     use signal_hook::consts::SIGCHLD;
     use signal_hook::iterator::Signals;
     use std::sync::mpsc::TryRecvError;
     use std::time::Duration;
 
     pub(super) fn reap_children(
-        pids: Option<&Sender<libc::pid_t>>,
+        pids: Option<&Sender<Pid>>,
         errors: Option<&Sender<io::Error>>,
         shutdown: &Receiver<()>,
         reap_lock: Option<&Arc<RwLock<()>>>,
@@ -86,7 +97,7 @@ mod platform {
         }
     }
 
-    fn drain_children(pids: Option<&Sender<libc::pid_t>>, errors: Option<&Sender<io::Error>>) {
+    fn drain_children(pids: Option<&Sender<Pid>>, errors: Option<&Sender<io::Error>>) {
         loop {
             let mut status = 0;
             let pid = unsafe {
@@ -126,19 +137,23 @@ mod platform {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::process::Command;
     use std::sync::mpsc;
-    use std::time::Duration;
 
     #[test]
     fn support_matches_target() {
-        assert!(is_supported());
+        assert_eq!(
+            is_supported(),
+            cfg!(all(unix, not(target_os = "solaris")))
+        );
     }
 
     #[test]
     #[cfg(all(unix, not(target_os = "solaris")))]
     #[allow(clippy::zombie_processes)]
     fn reaps_exited_child() {
+        use std::process::Command;
+        use std::time::Duration;
+
         let (pid_tx, pid_rx) = mpsc::channel();
         let (error_tx, error_rx) = mpsc::channel();
         let (shutdown_tx, shutdown_rx) = mpsc::channel();

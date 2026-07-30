@@ -35,7 +35,7 @@ AGENTS.md               Canonical agent instructions (this file)
 
 ## Architecture
 
-- **API surface:** `is_supported()` and `reap_children(pids, errors, shutdown, reap_lock)`.
+- **API surface:** `is_supported()`, `Pid`, and `reap_children(pids, errors, shutdown, reap_lock)`.
 - **Unix (not Solaris):** `signal-hook` on `SIGCHLD`, nonblocking `wait4(-1, WNOHANG)`, optional `Arc<RwLock<()>>` write-lock while draining.
 - **Windows / Solaris / non-Unix:** safe no-op (matches upstream `go-reap` behavior).
 - **Coordination:** callers that `wait` on their own children should hold a **read** lock on `reap_lock` so the reaper does not steal the exit status.
