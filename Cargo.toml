@@ -17,7 +17,7 @@ include = ["src/**/*", "Cargo.toml", "LICENSE", "README.md", "rust-toolchain.tom
 libc = "0.2"
 
 [target.'cfg(all(unix, not(target_os = "solaris")))'.dependencies]
-signal-hook = "0.3"
+signal-hook = "0.4"
 
 [lints.rust]
 unsafe_op_in_unsafe_fn = "deny"
